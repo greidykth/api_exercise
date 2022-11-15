@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\BalanceController;
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\ResetController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
