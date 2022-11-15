@@ -16,6 +16,7 @@ class AccountTest extends TestCase
         $response = $this->post('/reset');
         $response->assertStatus(200)->assertContent('OK');
     }
+
     /**
      * Test for get balance for non-existing account.
      *
@@ -23,7 +24,38 @@ class AccountTest extends TestCase
      */
     public function test_get_balance_for_non_existing_account()
     {
-        $response = $this->get('/balance');
+        $response = $this->get('/balance?account_id=1234');
         $response->assertStatus(404)->assertContent('0');
+    }
+
+    /**
+     * Test for create account with initial balance
+     *
+     * @return void
+     */
+    public function test_create_account_with_initial_balance()
+    {
+        $response = $this->post('/event', ["type"=>"deposit", "destination"=>"100", "amount"=>10]);
+        $response->assertStatus(201)->assertJson(["destination"=> ["id"=>"100", "balance"=>10]]);
+    }
+    /**
+     * Test for deposit into existing account
+     *
+     * @return void
+     */
+    public function test_deposit_into_existing_account()
+    {
+        $response = $this->post('/event', ["type"=>"deposit", "destination"=>"100", "amount"=>10]);
+        $response->assertStatus(201)->assertJson(["destination"=> ["id"=>"100", "balance"=>20]]);
+    }
+    /**
+     * Test for get balance for existing account.
+     *
+     * @return void
+     */
+    public function test_get_balance_for_existing_account()
+    {
+        $response = $this->get('/balance?account_id=100');
+        $response->assertStatus(200)->assertContent('20');
     }
 }
