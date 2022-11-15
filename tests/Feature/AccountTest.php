@@ -12,10 +12,9 @@ class AccountTest extends TestCase
      *
      * @return void
      */
-    public function test_the_application_returns_a_successful_response()
+    public function test_reset_the_application()
     {
-        $response = $this->get('/');
-
-        $response->assertStatus(200);
+        $response = $this->post('/reset');
+        $response->assertStatus(200)->assertContent('OK');
     }
 }
