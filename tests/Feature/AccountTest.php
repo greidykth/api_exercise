@@ -82,4 +82,29 @@ class AccountTest extends TestCase
         $response = $this->post('/event', ["type"=>"withdraw", "origin"=>"100", "amount"=>5]);
         $response->assertStatus(201)->assertJson(["origin"=> ["id"=>"100", "balance"=>15]]);
     }
+
+    /**
+     * Test for transfer from existing account
+     *
+     * @return void
+     */
+    public function test_transfer_from_existing_account()
+    {
+        $reset = $this->post('/event', ["type" => "transfer", "origin" => "100", "amount"=>15, "destination" => "300"]);
+        $reset->assertStatus(201)->assertJson([
+            "origin"=> ["id"=>"100", "balance"=>0],
+            "destination"=> ["id"=>"300", "balance"=>15]
+        ]);
+    }
+
+     /**
+     * Test for transfer from non-existing account
+     *
+     * @return void
+     */
+    public function test_transfer_from_non_existing_account()
+    {
+        $reset = $this->post('/event', ["type" => "transfer", "origin" => "200", "amount"=>15, "destination" => "300"]);
+        $reset->assertStatus(404)->assertContent('0');
+    }
 }
